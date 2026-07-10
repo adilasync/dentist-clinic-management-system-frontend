@@ -15,21 +15,24 @@ import {
   Bluetooth,
 } from "lucide-react";
 import { currentPatient } from "../data/current-patient";
+import { useAuthStore } from "@/store/auth-store";
 
 const navItems = [
   { label: "My Overview", href: "/patient", icon: LayoutGrid },
   { label: "Appointments", href: "/patient/appointments", icon: Calendar },
   { label: "Request Appointment", href: "/patient/request-appointment", icon: Send },
-//   { label: "Treatment Plan", href: "/patient/treatment-plan", icon: ClipboardList },
-//   { label: "X-Rays & Records", href: "/patient/xrays-records", icon: ScanLine },
-//   { label: "Billing", href: "/patient/billing", icon: CreditCard },
-//   { label: "Rewards", href: "/patient/rewards", icon: Gift },
   { label: "My Profile", href: "/patient/profile", icon: User },
-//   { label: "Settings", href: "/patient/settings", icon: Settings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useAuthStore();
+
+  const displayName = user ? user.name : currentPatient.name;
+  const displayRole = user ? user.role : currentPatient.role;
+  const displayInitials = user 
+    ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+    : currentPatient.initials;
 
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col justify-between bg-slate-950 text-slate-200">
@@ -67,11 +70,11 @@ export function Sidebar() {
       <div className="border-t border-slate-800 px-4 py-4">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
-            {currentPatient.initials}
+            {displayInitials}
           </div>
           <div className="flex-1 truncate">
-            <p className="truncate text-sm font-medium text-white">{currentPatient.name}</p>
-            <p className="text-xs text-slate-400">{currentPatient.role}</p>
+            <p className="truncate text-sm font-medium text-white">{displayName}</p>
+            <p className="text-xs text-slate-400">{displayRole}</p>
           </div>
         </div>
       </div>
